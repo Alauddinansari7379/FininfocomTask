@@ -125,7 +125,7 @@ class LogIn : AppCompatActivity() {
                         || password.contains("|"))
             ) {
 
-                binding.edtPassword.error = "Password must be SpecialCharacter and Numeric"
+                binding.edtPassword.error = "Password must be SpecialCharacter"
 
                 if (!isValidPassword(password)){
                     binding.edtPassword.error = "Password must be with 1UpperCase Alphabet "
