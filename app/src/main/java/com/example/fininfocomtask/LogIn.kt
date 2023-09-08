@@ -48,6 +48,7 @@ class LogIn : AppCompatActivity() {
                 binding.edtUserName.requestFocus()
                 return@setOnClickListener
             }
+
             if (binding.edtPassword.text!!.isEmpty()) {
                 binding.edtPassword.error = "Enter Password"
                 binding.edtPassword.requestFocus()
@@ -84,6 +85,11 @@ class LogIn : AppCompatActivity() {
         binding.btnRegister.setOnClickListener {
             if (binding.edtUserName.text!!.isEmpty()) {
                 binding.edtUserName.error = "Enter UserName"
+                binding.edtUserName.requestFocus()
+                return@setOnClickListener
+            }
+            if (binding.edtUserName.text!!.length<10) {
+                binding.edtUserName.error = "Username must be 10 characters"
                 binding.edtUserName.requestFocus()
                 return@setOnClickListener
             }
@@ -135,8 +141,7 @@ class LogIn : AppCompatActivity() {
                         val user = auth!!.currentUser
                         myToast(this@LogIn, "Successfully Registered")
                         val intent = Intent(applicationContext, MainActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                         finish()
                         startActivity(intent)
                         AppProgressBar.hideLoaderDialog()
