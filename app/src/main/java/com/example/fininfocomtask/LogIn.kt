@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.example.ehcf.sharedpreferences.SessionManager
 import com.example.fininfocomtask.databinding.ActivityLogInBinding
 import com.example.fininfocomtask.utils.AppProgressBar
 import com.example.fininfocomtask.utils.myToast
@@ -20,6 +21,7 @@ class LogIn : AppCompatActivity() {
     private var email = ""
     private var password = ""
     private var passwordMatcher = false
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +29,12 @@ class LogIn : AppCompatActivity() {
         setContentView(binding.root)
         auth = FirebaseAuth.getInstance()
 
+        sessionManager = SessionManager(this@LogIn)
 
-
+        if (sessionManager.isLogin) {
+            startActivity(Intent(this@LogIn, MainActivity::class.java))
+            finish()
+        }
 
         binding.tvSignUp.setOnClickListener {
             binding.btnRegister.visibility = View.VISIBLE
@@ -66,9 +72,9 @@ class LogIn : AppCompatActivity() {
                         Log.e("user", user.toString())
                         AppProgressBar.hideLoaderDialog()
                         myToast(this, "Log In Successfully")
+                        sessionManager.isLogin = true
                         val intent = Intent(applicationContext, MainActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                         finish()
                         startActivity(intent)
                     } else {

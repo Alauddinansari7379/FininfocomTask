@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.example.ehcf.sharedpreferences.SessionManager
 import com.example.fininfocomtask.Realm.AddUserDataActivity
 import com.example.fininfocomtask.Realm.MainViewModel
 import com.example.fininfocomtask.Realm.UserAdapter
@@ -30,11 +31,14 @@ class MainActivity : AppCompatActivity(),UserAdapter.SortBy {
     private lateinit var viewModel: MainViewModel
     private var id: String? = ""
     var dialog: Dialog? = null
+    private lateinit var sessionManager: SessionManager
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        sessionManager = SessionManager(this@MainActivity)
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
@@ -47,6 +51,15 @@ class MainActivity : AppCompatActivity(),UserAdapter.SortBy {
             viewModel.deleteAllUser()
             notesAdapter.notifyDataSetChanged()
             refresh()
+        }
+
+        binding.imageLogOut.setOnClickListener {
+            sessionManager.isLogin = false
+            viewModel.deleteAllUser()
+            val intent = Intent(applicationContext, LogIn::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            finish()
+            startActivity(intent)
         }
 
         val itemTouchHelperCallback = object :
@@ -142,7 +155,7 @@ class MainActivity : AppCompatActivity(),UserAdapter.SortBy {
 
     override fun onBackPressed() {
         if (doubleBackToExitPressedOnce) {
-            super.finish()
+             finishAffinity()
             return
         }
         doubleBackToExitPressedOnce = true
